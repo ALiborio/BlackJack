@@ -25,7 +25,7 @@ public partial class Main : Node2D
 		// Generate Cards for all values (1-12) and suits (club, diamond, heart, spade)
 		foreach (Card.Suits suit in Enum.GetValues(typeof(Card.Suits)))
 		{
-			for (int val=1; val<13; val++)
+			for (int val = 1; val < 14; val++)
 			{
 				var card = CardScene.Instantiate<Card>();
 				card.Init(suit,val);

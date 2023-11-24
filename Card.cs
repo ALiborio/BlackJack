@@ -13,7 +13,7 @@ public partial class Card : Node2D
 		suit = initSuit;
 	}
 
-	private static readonly char[] valueDisplay = {'A','2','3','4','5','6','7','8','9','J','Q','K'};
+	private static readonly string[] valueDisplay = {"A","2","3","4","5","6","7","8","9","10","J","Q","K"};
 	
 	public enum Suits
 	{
