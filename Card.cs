@@ -30,7 +30,7 @@ public partial class Card : Node2D
 	}
 
 
-	public void InitializeDisplay()
+	private void InitializeDisplay()
 	{
 		var valueLabel = GetNode<Label>("ValueLabel");
 		valueLabel.Text = valueDisplay[value-1].ToString();
