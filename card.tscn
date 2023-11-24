@@ -1,0 +1,48 @@
+[gd_scene load_steps=5 format=3 uid="uid://bl1ovservey8g"]
+
+[ext_resource type="FontFile" uid="uid://u53tchiruqs2" path="res://fonts/Neothic.ttf" id="1_0te4w"]
+[ext_resource type="Script" path="res://Card.cs" id="1_o41h4"]
+[ext_resource type="FontFile" uid="uid://2v5y733fantb" path="res://fonts/NotoSansSymbols2-Regular.ttf" id="2_nujn6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jt5mt"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.196078, 0.196078, 0.196078, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="Card" type="Node2D"]
+script = ExtResource("1_o41h4")
+
+[node name="Background" type="Panel" parent="."]
+offset_right = 180.0
+offset_bottom = 280.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_jt5mt")
+
+[node name="ValueLabel" type="Label" parent="."]
+offset_left = 1.0
+offset_top = 2.0
+offset_right = 41.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_0te4w")
+theme_override_font_sizes/font_size = 30
+text = "A"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SuitLabel" type="Label" parent="."]
+offset_top = 32.0
+offset_right = 40.0
+offset_bottom = 78.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_nujn6")
+theme_override_font_sizes/font_size = 25
+text = "♠"
+horizontal_alignment = 1
+vertical_alignment = 1
