@@ -13,6 +13,7 @@ public partial class Main : Node2D
 	public override void _Ready()
 	{
 		GenerateDeck();
+		ShuffleDeck();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -59,13 +60,32 @@ public partial class Main : Node2D
 	{
 		// Arrange the cards in the deck
 		var deck = GetNode<Node2D>("Table").GetNode<Node2D>("Deck");
-		var position = deck.Position;
 		for (int i = 0; i < _deck.Length; i++)
 		{
 			deck.MoveChild(_deck[i],_deck.Length-i);
-			float x = i*-1;
-			float y = i;
-			_deck[i].Position = new Vector2(x, y);
+			_deck[i].Position = new Vector2(-i, i);
+		}
+	}
+
+	private void DrawCard()
+	{
+		var deck = GetNode<Node2D>("Table").GetNode<Node2D>("Deck");
+		var playerHand = GetNode<Node2D>("Table").GetNode<Node2D>("PlayerHand");
+
+		if (_deck.Length > 0)
+		{
+			// Draw the top card from the deck and put it in the hand
+			var card = _deck[_deck.Length-1];
+			_deck = _deck.Where((value,index)=> index != _deck.Length-1).ToArray();
+			deck.RemoveChild(card);
+			var cardCount = playerHand.GetChildren().Count;
+			playerHand.AddChild(card);
+			card.Position = new Vector2(40 * cardCount,0);
+		}
+
+		if (_deck.Length == 0)
+		{
+			GetNode<Node2D>("Table").GetNode<Panel>("CardBack").Hide();
 		}
 	}
 }

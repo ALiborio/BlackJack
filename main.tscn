@@ -36,11 +36,11 @@ color = Color(0.164706, 0.411765, 0.2, 1)
 [node name="Table" type="Node2D" parent="."]
 
 [node name="DealerHand" parent="Table" instance=ExtResource("3_tfjuk")]
-position = Vector2(512, 50)
+position = Vector2(75, 50)
 HandOwner = "dealer"
 
 [node name="PlayerHand" parent="Table" instance=ExtResource("3_tfjuk")]
-position = Vector2(512, 450)
+position = Vector2(75, 450)
 HandOwner = "player"
 
 [node name="Deck" type="Node2D" parent="Table"]
@@ -63,4 +63,4 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_epato")
 
 [node name="HUD" parent="." instance=ExtResource("3_g7ueh")]
 
-[connection signal="ShuffleDeck" from="HUD" to="." method="ShuffleDeck"]
+[connection signal="DrawCard" from="HUD" to="." method="DrawCard"]
