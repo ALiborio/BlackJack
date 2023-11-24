@@ -8,12 +8,12 @@
 script = ExtResource("1_gptx5")
 CardScene = ExtResource("2_h0ae1")
 
-[node name="Table" type="Node2D" parent="."]
-
-[node name="ColorRect" type="ColorRect" parent="Table"]
+[node name="Background" type="ColorRect" parent="."]
 offset_right = 1024.0
 offset_bottom = 768.0
 color = Color(0.164706, 0.411765, 0.2, 1)
+
+[node name="Table" type="Node2D" parent="."]
 
 [node name="HUD" parent="." instance=ExtResource("3_g7ueh")]
 

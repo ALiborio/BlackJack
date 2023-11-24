@@ -3,13 +3,13 @@ using System;
 
 public partial class Card : Node2D
 {
-	private int value { get; set; } = 1;
-	private Suits suit { get; set;}
+	private int _value { get; set; } = 1;
+	private Suits _suit { get; set;}
 
 	public void Init(Suits initSuit, int initValue)
 	{
-		value = initValue;
-		suit = initSuit;
+		_value = initValue;
+		_suit = initSuit;
 	}
 
 	private static readonly string[] valueDisplay = {"A","2","3","4","5","6","7","8","9","10","J","Q","K"};
@@ -33,9 +33,9 @@ public partial class Card : Node2D
 	private void InitializeDisplay()
 	{
 		var valueLabel = GetNode<Label>("ValueLabel");
-		valueLabel.Text = valueDisplay[value-1].ToString();
+		valueLabel.Text = valueDisplay[_value-1].ToString();
 		var suitLabel = GetNode<Label>("SuitLabel");
-		switch (suit)
+		switch (_suit)
 		{
 			case Suits.Spade:
 				suitLabel.Text = "♠";

@@ -7,13 +7,12 @@ public partial class Main : Node2D
 	[Export]
 	public PackedScene CardScene { get; set; }
 
-	private Card[] deck = Array.Empty<Card>();
+	private Card[] _deck = Array.Empty<Card>();
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		GenerateDeck();
-		ShuffleDeck();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -28,15 +27,15 @@ public partial class Main : Node2D
 		// Generate Cards for all values (1-13) and suits (club, diamond, heart, spade)
 		foreach (Card.Suits suit in Enum.GetValues(typeof(Card.Suits)))
 		{
-			for (int val = 1; val < 14; val++)
+			for (int value = 1; value < 14; value++)
 			{
 				var card = CardScene.Instantiate<Card>();
-				card.Init(suit,val);
-				deck = deck.Append(card).ToArray();
-				table.AddChild(card); 
-				card.Position = new Vector2(val * 45, (int) suit * 80);
+				card.Init(suit,value);
+				_deck = _deck.Append(card).ToArray();
+				table.AddChild(card);
 			}
 		}
+		ArrangeDeck();
 	}
 
 	public void ShuffleDeck()
@@ -44,25 +43,29 @@ public partial class Main : Node2D
 		var table = GetNode<Node2D>("Table");
 		GD.Print("Shuffle the Deck");
 		Card[] newDeck = Array.Empty<Card>();
-		for (int i = deck.Length - 1; i > 0; i--)
+		for (int i = _deck.Length - 1; i > 0; i--)
 		{
 			var j = GD.RandRange(0,i);
-			newDeck = newDeck.Append(deck[j]).ToArray();
-			table.RemoveChild(deck[j]);
-			deck = deck.Where((val,index)=> index != j).ToArray();
+			newDeck = newDeck.Append(_deck[j]).ToArray();
+			_deck = _deck.Where((value,index)=> index != j).ToArray();
 		}
-		// Move the final item to the new deck and remove it from the scene
-		newDeck = newDeck.Append(deck[0]).ToArray();
-		table.RemoveChild(deck[0]);
+		// Move the final item to the new deck
+		newDeck = newDeck.Append(_deck[0]).ToArray();
 		// Update the deck with the shuffled deck
-		deck = newDeck;
-		// Arrange the newly shuffled deck for display
-		for (int i = 0; i < deck.Length; i++)
+		_deck = newDeck;
+		ArrangeDeck();
+	}
+
+	private void ArrangeDeck()
+	{
+		// Arrange the cards in the deck on the table
+		var table = GetNode<Node2D>("Table");
+		for (int i = 0; i < _deck.Length; i++)
 		{
-			table.AddChild(deck[i]);
+			table.MoveChild(_deck[i],i);
 			int x = i % 13 * 45;
 			int y = i / 13 * 80;
-			deck[i].Position = new Vector2(x, y);
+			_deck[i].Position = new Vector2(x, y);
 		}
 	}
 }
