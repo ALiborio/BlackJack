@@ -1,7 +1,6 @@
 using Godot;
 using System;
 using System.Linq;
-using System.Net.Security;
 
 public partial class Main : Node2D
 {
@@ -22,7 +21,7 @@ public partial class Main : Node2D
 
 	private void GenerateDeck()
 	{
-		// Generate Cards for all values (1-12) and suits (club, diamond, heart, spade)
+		// Generate Cards for all values (1-13) and suits (club, diamond, heart, spade)
 		foreach (Card.Suits suit in Enum.GetValues(typeof(Card.Suits)))
 		{
 			for (int val = 1; val < 14; val++)
