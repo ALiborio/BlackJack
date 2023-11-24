@@ -1,8 +1,28 @@
-[gd_scene load_steps=4 format=3 uid="uid://dm3o4y8pa5ysl"]
+[gd_scene load_steps=7 format=3 uid="uid://dm3o4y8pa5ysl"]
 
 [ext_resource type="Script" path="res://Main.cs" id="1_gptx5"]
 [ext_resource type="PackedScene" uid="uid://bl1ovservey8g" path="res://card.tscn" id="2_h0ae1"]
 [ext_resource type="PackedScene" uid="uid://dpmghgccrjn2j" path="res://hud.tscn" id="3_g7ueh"]
+[ext_resource type="PackedScene" uid="uid://b25sl5kwwey2o" path="res://hand.tscn" id="3_tfjuk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o3prj"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.172549, 0.172549, 0.172549, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_epato"]
+bg_color = Color(0, 0.2, 0.356863, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_gptx5")
@@ -14,6 +34,32 @@ offset_bottom = 768.0
 color = Color(0.164706, 0.411765, 0.2, 1)
 
 [node name="Table" type="Node2D" parent="."]
+
+[node name="DealerHand" parent="Table" instance=ExtResource("3_tfjuk")]
+position = Vector2(512, 50)
+HandOwner = "dealer"
+
+[node name="PlayerHand" parent="Table" instance=ExtResource("3_tfjuk")]
+position = Vector2(512, 450)
+HandOwner = "player"
+
+[node name="Deck" type="Node2D" parent="Table"]
+position = Vector2(828, 8)
+
+[node name="CardBack" type="Panel" parent="Table"]
+offset_left = 828.0
+offset_top = 8.0
+offset_right = 1008.0
+offset_bottom = 288.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_o3prj")
+
+[node name="CardBackArt" type="Panel" parent="Table/CardBack"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 160.0
+offset_bottom = 260.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_epato")
 
 [node name="HUD" parent="." instance=ExtResource("3_g7ueh")]
 

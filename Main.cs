@@ -22,7 +22,7 @@ public partial class Main : Node2D
 
 	private void GenerateDeck()
 	{
-		var table = GetNode<Node2D>("Table");
+		var deck = GetNode<Node2D>("Table").GetNode<Node2D>("Deck");
 		GD.Print("Generate the Deck");
 		// Generate Cards for all values (1-13) and suits (club, diamond, heart, spade)
 		foreach (Card.Suits suit in Enum.GetValues(typeof(Card.Suits)))
@@ -32,7 +32,7 @@ public partial class Main : Node2D
 				var card = CardScene.Instantiate<Card>();
 				card.Init(suit,value);
 				_deck = _deck.Append(card).ToArray();
-				table.AddChild(card);
+				deck.AddChild(card);
 			}
 		}
 		ArrangeDeck();
@@ -40,7 +40,6 @@ public partial class Main : Node2D
 
 	public void ShuffleDeck()
 	{
-		var table = GetNode<Node2D>("Table");
 		GD.Print("Shuffle the Deck");
 		Card[] newDeck = Array.Empty<Card>();
 		for (int i = _deck.Length - 1; i > 0; i--)
@@ -58,13 +57,14 @@ public partial class Main : Node2D
 
 	private void ArrangeDeck()
 	{
-		// Arrange the cards in the deck on the table
-		var table = GetNode<Node2D>("Table");
+		// Arrange the cards in the deck
+		var deck = GetNode<Node2D>("Table").GetNode<Node2D>("Deck");
+		var position = deck.Position;
 		for (int i = 0; i < _deck.Length; i++)
 		{
-			table.MoveChild(_deck[i],i);
-			int x = i % 13 * 45;
-			int y = i / 13 * 80;
+			deck.MoveChild(_deck[i],_deck.Length-i);
+			float x = i*-1;
+			float y = i;
 			_deck[i].Position = new Vector2(x, y);
 		}
 	}
