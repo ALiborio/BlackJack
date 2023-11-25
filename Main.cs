@@ -89,4 +89,63 @@ public partial class Main : Node2D
 			GetNode<Node2D>("Table").GetNode<Panel>("CardBack").Hide();
 		}
 	}
+	
+	public void EndTurn()
+	{
+		GetNode<Node2D>("Table").GetNode<Hand>("PlayerHand").EndTurn();
+		// TODO: Dealer turn
+		TurnOver();
+	}
+
+	public void TurnOver()
+	{
+		var hud = GetNode<HUD>("HUD");
+		hud.GetNode<Button>("HitButton").Hide();
+		hud.GetNode<Button>("StandButton").Hide();
+		hud.GetNode<Button>("NewHandButton").Show();
+	}
+
+	public void ClearTable()
+	{
+		var table = GetNode<Node2D>("Table");
+		var playerHand = table.GetNode<Hand>("PlayerHand");
+		var dealerHand = table.GetNode<Hand>("DealerHand");
+		var discardPile = table.GetNode<Node2D>("DiscardPile");
+		foreach(var child in playerHand.GetChildren().ToArray())
+		{
+			if (child is Card)
+			{
+				var card = child as Card;
+				playerHand.RemoveChild(card);
+				discardPile.AddChild(card);
+			}
+		}
+		foreach(var child in dealerHand.GetChildren().ToArray())
+		{
+			if (child is Card)
+			{
+				var card = child as Card;
+				dealerHand.RemoveChild(card);
+				discardPile.AddChild(card);
+			}
+		}
+		playerHand.ResetHand();
+		dealerHand.ResetHand();
+
+		var hud = GetNode<HUD>("HUD");
+		hud.GetNode<Button>("HitButton").Show();
+		hud.GetNode<Button>("StandButton").Show();
+		hud.GetNode<Button>("NewHandButton").Hide();
+	}
+
+	public void PlayerBust()
+	{
+		TurnOver();
+	}
+
+	public void PlayerBlackJack()
+	{
+		// TODO: Dealer turn
+		TurnOver();
+	}
 }

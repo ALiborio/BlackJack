@@ -5,6 +5,10 @@ public partial class Hand : Node2D
 {
 	[Export]
 	public string HandOwner { get; set; }
+	[Signal]
+	public delegate void BustEventHandler();
+	[Signal]
+	public delegate void BlackJackEventHandler();
 
 	private int _score;
 	private Status _status = Status.Active;
@@ -50,9 +54,11 @@ public partial class Hand : Node2D
 			_score = score;
 			if (score > 21) {
 				_status = Status.Bust;
+				EmitSignal(SignalName.Bust);
 			} else if (score == 21) {
 				_status = Status.BlackJack;
-			} else {
+				EmitSignal(SignalName.BlackJack);
+			} else if (_status != Status.Stand) {
 				_status = Status.Active;
 			}
 			// Update the label with the score
@@ -68,6 +74,22 @@ public partial class Hand : Node2D
 			}
 			GetNode<Label>("HandLabel").Text = HandOwner + "'s Hand (" + _score + altScoreText + ") " + statusText;
 		}
+	}
+
+	public void EndTurn()
+	{
+		if (_status == Status.Active)
+		{
+			_status = Status.Stand;
+		}
+		CalculateScore();
+	}
+
+	public void ResetHand()
+	{
+		_score = 0;
+		_status = Status.Active;
+		GetNode<Label>("HandLabel").Text = HandOwner+"'s Hand";
 	}
 
 	public Boolean IsBust()

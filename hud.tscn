@@ -5,7 +5,7 @@
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_lmf7a")
 
-[node name="DrawButton" type="Button" parent="."]
+[node name="HitButton" type="Button" parent="."]
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -18,6 +18,32 @@ offset_bottom = -18.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 20
-text = "Draw a Card"
+text = "Hit"
 
-[connection signal="pressed" from="DrawButton" to="." method="OnDrawCardButtonPressed"]
+[node name="StandButton" type="Button" parent="."]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -174.0
+offset_top = -178.0
+offset_right = -24.0
+offset_bottom = -103.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 20
+text = "Stand"
+
+[node name="NewHandButton" type="Button" parent="."]
+visible = false
+offset_left = 852.0
+offset_top = 632.0
+offset_right = 1002.0
+offset_bottom = 707.0
+theme_override_font_sizes/font_size = 20
+text = "New Hand"
+
+[connection signal="pressed" from="HitButton" to="." method="OnHitButtonPressed"]
+[connection signal="pressed" from="StandButton" to="." method="OnStandButtonPressed"]
+[connection signal="pressed" from="NewHandButton" to="." method="OnNewHandButtonPressed"]

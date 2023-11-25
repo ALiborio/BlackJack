@@ -44,13 +44,13 @@ position = Vector2(75, 450)
 HandOwner = "Player"
 
 [node name="Deck" type="Node2D" parent="Table"]
-position = Vector2(828, 8)
+position = Vector2(830, 10)
 
 [node name="CardBack" type="Panel" parent="Table"]
-offset_left = 828.0
-offset_top = 8.0
-offset_right = 1008.0
-offset_bottom = 288.0
+offset_left = 830.0
+offset_top = 10.0
+offset_right = 1010.0
+offset_bottom = 290.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_o3prj")
 
 [node name="CardBackArt" type="Panel" parent="Table/CardBack"]
@@ -61,6 +61,13 @@ offset_right = 160.0
 offset_bottom = 260.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_epato")
 
+[node name="DiscardPile" type="Node2D" parent="Table"]
+position = Vector2(1075, 10)
+
 [node name="HUD" parent="." instance=ExtResource("3_g7ueh")]
 
+[connection signal="BlackJack" from="Table/PlayerHand" to="." method="PlayerBlackJack"]
+[connection signal="Bust" from="Table/PlayerHand" to="." method="PlayerBust"]
 [connection signal="DrawCard" from="HUD" to="." method="DrawCard"]
+[connection signal="EndTurn" from="HUD" to="." method="EndTurn"]
+[connection signal="NewHand" from="HUD" to="." method="ClearTable"]
