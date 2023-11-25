@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Runtime.InteropServices;
 
 public partial class Hand : Node2D
 {
@@ -7,8 +8,6 @@ public partial class Hand : Node2D
 	public string HandOwner { get; set; }
 	[Signal]
 	public delegate void BustEventHandler();
-	[Signal]
-	public delegate void BlackJackEventHandler();
 
 	private int _score;
 	private int _altScore; // Aces can be 1 or 11, this score is when they are treated as 11
@@ -25,12 +24,17 @@ public partial class Hand : Node2D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		GetNode<Label>("HandLabel").Text = HandOwner+"'s Hand";
+		UpdateLabel();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+	}
+
+	private void UpdateLabel([Optional]string additionalText)
+	{
+		GetNode<Label>("HandLabel").Text = HandOwner + "'s Hand" + additionalText;
 	}
 
 	public void CalculateScore()
@@ -68,7 +72,6 @@ public partial class Hand : Node2D
 				EmitSignal(SignalName.Bust);
 			} else if (_altScore == 21 && cards == 2) {
 				_status = Status.BlackJack;
-				EmitSignal(SignalName.BlackJack);
 			} else if (_status != Status.Stand) {
 				_status = Status.Active;
 			}
@@ -83,7 +86,7 @@ public partial class Hand : Node2D
 			{
 				altScoreText = "/"+_altScore.ToString();
 			}
-			string additionalText = "";
+			string additionalText;
 			if (_status == Status.BlackJack)
 			{
 				additionalText = " "+statusText;
@@ -92,7 +95,7 @@ public partial class Hand : Node2D
 			{
 				additionalText = " (" + _score + altScoreText + ") " + statusText;
 			}
-			GetNode<Label>("HandLabel").Text = HandOwner + "'s Hand" + additionalText;
+			UpdateLabel(additionalText);
 		}
 	}
 
@@ -120,7 +123,7 @@ public partial class Hand : Node2D
 			if (child is Card)
 			{
 				var card = child as Card;
-				card.Flip();
+				card.FlipUp();
 			}
 		}
 	}

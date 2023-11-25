@@ -14,7 +14,8 @@ public partial class Main : Node2D
 	{
 		GenerateDeck();
 		ShuffleDeck();
-		StartRound();
+		HideActionButtons();
+		ShowActionButtons(false);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -70,7 +71,7 @@ public partial class Main : Node2D
 			hand.AddChild(card);
 			card.Position = new Vector2(40 * cardCount,0);
 			if (!faceDown)
-				card.Flip();
+				card.FlipUp();
 			hand.CalculateScore();
 		}
 	}
@@ -81,8 +82,8 @@ public partial class Main : Node2D
 		var deck = GetNode<Node2D>("Table").GetNode<Node2D>("Deck");
 		for (int i = 0; i < _deck.Length; i++)
 		{
-			deck.MoveChild(_deck[i],_deck.Length-i);
-			_deck[i].Position = new Vector2(-i, i);
+			deck.MoveChild(_deck[i],-1);
+			_deck[i].Position = new Vector2(i, i);
 		}
 	}
 
@@ -98,16 +99,15 @@ public partial class Main : Node2D
 	
 	public void EndTurn()
 	{
+		HideActionButtons();
 		GetNode<Node2D>("Table").GetNode<Hand>("PlayerHand").EndTurn();
 		DealerTurn();
 	}
 
-	public void TurnOver()
+	public void RoundOver()
 	{
-		var hud = GetNode<HUD>("HUD");
-		hud.GetNode<Button>("HitButton").Hide();
-		hud.GetNode<Button>("StandButton").Hide();
-		hud.GetNode<Button>("NewHandButton").Show();
+		// TODO add showdown logic to determine winner
+		ShowActionButtons(false);
 	}
 
 	public async void DealerTurn()
@@ -117,15 +117,15 @@ public partial class Main : Node2D
 		// Flip the dealer's cards
 		dealerHand.ShowAllCards();
 		dealerHand.CalculateScore();
-		await ToSignal(actionTimer, "timeout");
 		while (dealerHand.IsActive() && _deck.Length > 0) {
+			await ToSignal(actionTimer, "timeout");
 			if (dealerHand.GetScore() >= 17) {
 				dealerHand.EndTurn();
 			} else {
 				DealCard(dealerHand,false);
 			}
 		}
-		TurnOver();
+		RoundOver();
 	}
 
 	public void ClearTable()
@@ -154,13 +154,28 @@ public partial class Main : Node2D
 		}
 		playerHand.ResetHand();
 		dealerHand.ResetHand();
+		if (_deck.Length < 20)
+		{
+			var deck = table.GetNode<Node2D>("Deck");
+			foreach(var child in discardPile.GetChildren().ToArray())
+			{
+				if (child is Card)
+				{
+					var card = child as Card;
+					_deck = _deck.Append(card).ToArray();
+					discardPile.RemoveChild(card);
+					deck.AddChild(card);
+					card.FlipDown();
+				}
+			}
+			ShuffleDeck();
+		}
 		StartRound();
 	}
 
 	public async void StartRound()
 	{
-		var hud = GetNode<HUD>("HUD");
-		hud.GetNode<Button>("NewHandButton").Hide();
+		HideActionButtons();
 		var actionTimer = GetNode<Timer>("ActionTimer");
 		var table = GetNode<Node2D>("Table");
 		var playerHand = table.GetNode<Hand>("PlayerHand");
@@ -175,23 +190,44 @@ public partial class Main : Node2D
 		DealCard(dealerHand,false);
 		await ToSignal(actionTimer, "timeout");
 		DealCard(dealerHand,true);
-		// Update HUD
-		hud.GetNode<Button>("HitButton").Show();
-		hud.GetNode<Button>("StandButton").Show();
+		if (playerHand.IsBlackJack())
+		{
+			PlayerBlackJack();
+		} else ShowActionButtons(true);
 	}
 
 	public void PlayerBust()
 	{
-		TurnOver();
+		HideActionButtons();
+		RoundOver();
 	}
 
 	public void PlayerBlackJack()
 	{
+		HideActionButtons();
 		var dealerHand = GetNode<Node2D>("Table").GetNode<Hand>("DealerHand");
 		// Flip the dealer's cards
 		dealerHand.ShowAllCards();
 		dealerHand.CalculateScore();
-		dealerHand.EndTurn();
-		TurnOver();
+		RoundOver();
+	}
+
+	private void HideActionButtons()
+	{
+		var hud = GetNode<HUD>("HUD");
+		hud.GetNode<Button>("HitButton").Hide();
+		hud.GetNode<Button>("StandButton").Hide();
+		hud.GetNode<Button>("NewHandButton").Hide();
+	}
+
+	private void ShowActionButtons(bool playerTurn)
+	{
+		var hud = GetNode<HUD>("HUD");
+		if(playerTurn) {
+			hud.GetNode<Button>("HitButton").Show();
+			hud.GetNode<Button>("StandButton").Show();
+		} else {
+			hud.GetNode<Button>("NewHandButton").Show();
+		}
 	}
 }

@@ -86,9 +86,15 @@ public partial class Card : Node2D
 		}
 	}
 
-	public void Flip()
+	public void FlipUp()
 	{
 		_faceDown = false;
+		showHideCardBack();
+	}
+
+	public void FlipDown()
+	{
+		_faceDown = true;
 		showHideCardBack();
 	}
 
