@@ -62,9 +62,9 @@ public partial class Hand : Node2D
 				statusText = _status.ToString().ToUpper();
 			}
 			string altScoreText = "";
-			if (aces > 0 && (aces * 9 + _score) < 21)
+			if (aces > 0 && (aces * 10 + _score) < 21)
 			{
-				altScoreText = "/"+(aces * 9 + _score).ToString();
+				altScoreText = "/"+(aces * 10 + _score).ToString();
 			}
 			GetNode<Label>("HandLabel").Text = HandOwner + "'s Hand (" + _score + altScoreText + ") " + statusText;
 		}
