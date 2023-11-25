@@ -56,6 +56,26 @@ public partial class Main : Node2D
 		ArrangeDeck();
 	}
 
+	public void DealCard(Hand hand)
+	{
+		var deck = GetNode<Node2D>("Table").GetNode<Node2D>("Deck");
+		if (_deck.Length > 0)
+		{
+			// Draw the top card from the deck and put it in the hand
+			var card = _deck[_deck.Length-1];
+			_deck = _deck.Where((value,index)=> index != _deck.Length-1).ToArray();
+			deck.RemoveChild(card);
+			var cardCount = hand.GetChildren().Count;
+			hand.AddChild(card);
+			card.Position = new Vector2(40 * cardCount,0);
+			hand.CalculateScore();
+		}
+		if (_deck.Length == 0)
+		{
+			GetNode<Node2D>("Table").GetNode<Panel>("CardBack").Hide();
+		}
+	}
+
 	private void ArrangeDeck()
 	{
 		// Arrange the cards in the deck
@@ -67,34 +87,20 @@ public partial class Main : Node2D
 		}
 	}
 
-	private void DrawCard()
+	private void Hit()
 	{
-		var deck = GetNode<Node2D>("Table").GetNode<Node2D>("Deck");
 		var playerHand = GetNode<Node2D>("Table").GetNode<Hand>("PlayerHand");
 
-		if (_deck.Length > 0 && playerHand.IsActive())
+		if (playerHand.IsActive())
 		{
-			// Draw the top card from the deck and put it in the hand
-			var card = _deck[_deck.Length-1];
-			_deck = _deck.Where((value,index)=> index != _deck.Length-1).ToArray();
-			deck.RemoveChild(card);
-			var cardCount = playerHand.GetChildren().Count;
-			playerHand.AddChild(card);
-			card.Position = new Vector2(40 * cardCount,0);
-			playerHand.CalculateScore();
-		}
-
-		if (_deck.Length == 0)
-		{
-			GetNode<Node2D>("Table").GetNode<Panel>("CardBack").Hide();
+			DealCard(playerHand);
 		}
 	}
 	
 	public void EndTurn()
 	{
 		GetNode<Node2D>("Table").GetNode<Hand>("PlayerHand").EndTurn();
-		// TODO: Dealer turn
-		TurnOver();
+		DealerTurn();
 	}
 
 	public void TurnOver()
@@ -103,6 +109,22 @@ public partial class Main : Node2D
 		hud.GetNode<Button>("HitButton").Hide();
 		hud.GetNode<Button>("StandButton").Hide();
 		hud.GetNode<Button>("NewHandButton").Show();
+	}
+
+	public void DealerTurn()
+	{
+		var dealerHand = GetNode<Node2D>("Table").GetNode<Hand>("DealerHand");
+		// Deal first two cards, in the future this will be done at the beginning of the round
+		DealCard(dealerHand);
+		DealCard(dealerHand);
+		while (dealerHand.IsActive() && _deck.Length > 0) {
+			if (dealerHand.GetScore() >= 17) {
+				dealerHand.EndTurn();
+			} else {
+				DealCard(dealerHand);
+			}
+		}
+		TurnOver();
 	}
 
 	public void ClearTable()
@@ -145,7 +167,6 @@ public partial class Main : Node2D
 
 	public void PlayerBlackJack()
 	{
-		// TODO: Dealer turn
-		TurnOver();
+		DealerTurn();
 	}
 }
