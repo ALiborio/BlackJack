@@ -8,14 +8,15 @@ public partial class Main : Node2D
 	public PackedScene CardScene { get; set; }
 
 	private Card[] _deck = Array.Empty<Card>();
+	private int _wins = 0;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		GenerateDeck();
 		ShuffleDeck();
-		HideActionButtons();
-		ShowActionButtons(false);
+		GetNode<HUD>("HUD").HideAllButtons();
+		GetNode<HUD>("HUD").EndOfTurnUI("Welcome to BlackJack");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -41,7 +42,7 @@ public partial class Main : Node2D
 		ArrangeDeck();
 	}
 
-	public void ShuffleDeck()
+	private void ShuffleDeck()
 	{
 		GD.Print("Shuffle the Deck");
 		Card[] newDeck = Array.Empty<Card>();
@@ -58,7 +59,7 @@ public partial class Main : Node2D
 		ArrangeDeck();
 	}
 
-	public void DealCard(Hand hand, bool faceDown)
+	private void DealCard(Hand hand, bool faceDown)
 	{
 		var deck = GetNode<Node2D>("Table").GetNode<Node2D>("Deck");
 		if (_deck.Length > 0)
@@ -97,20 +98,52 @@ public partial class Main : Node2D
 		}
 	}
 	
-	public void EndTurn()
+	private void EndTurn()
 	{
-		HideActionButtons();
+		GetNode<HUD>("HUD").HideAllButtons();
 		GetNode<Node2D>("Table").GetNode<Hand>("PlayerHand").EndTurn();
 		DealerTurn();
 	}
 
-	public void RoundOver()
+	private void RoundOver()
 	{
-		// TODO add showdown logic to determine winner
-		ShowActionButtons(false);
+		var playerHand = GetNode<Node2D>("Table").GetNode<Hand>("PlayerHand");
+		var dealerHand = GetNode<Node2D>("Table").GetNode<Hand>("DealerHand");
+		string message;
+		if (playerHand.IsBust())
+		{
+			message = "BUSTED!\nYou Lose!";
+		} else if (playerHand.IsBlackJack()) {
+			if (dealerHand.IsBlackJack()) {
+				message = "PUSH!";
+			} else {
+				message = "BLACKJACK!\nYou Win!";
+				_wins++;
+			}
+		} else if (dealerHand.IsBust())
+		{
+			message = "Dealer Busted!\nYou Win!";
+			_wins++;
+		} else if (dealerHand.IsBlackJack()) {
+			message = "Dealer Blackjack!\nYou Lose!";
+		} else if (playerHand.GetScore()==dealerHand.GetScore()) {
+			message = "PUSH!";
+		} else if (playerHand.GetScore() > dealerHand.GetScore()) {
+			message = "You Win!";
+			_wins++;
+		} else {
+			message = "You Lose!";
+		}
+		GetNode<HUD>("HUD").EndOfTurnUI(message);
+		GetNode<HUD>("HUD").UpdateWins(_wins);
 	}
 
-	public async void DealerTurn()
+	private void Showdown()
+	{
+		
+	}
+
+	private async void DealerTurn()
 	{
 		var dealerHand = GetNode<Node2D>("Table").GetNode<Hand>("DealerHand");
 		var actionTimer = GetNode<Timer>("ActionTimer");
@@ -173,9 +206,9 @@ public partial class Main : Node2D
 		StartRound();
 	}
 
-	public async void StartRound()
+	private async void StartRound()
 	{
-		HideActionButtons();
+		GetNode<HUD>("HUD").HideAllButtons();
 		var actionTimer = GetNode<Timer>("ActionTimer");
 		var table = GetNode<Node2D>("Table");
 		var playerHand = table.GetNode<Hand>("PlayerHand");
@@ -193,18 +226,12 @@ public partial class Main : Node2D
 		if (playerHand.IsBlackJack())
 		{
 			PlayerBlackJack();
-		} else ShowActionButtons(true);
+		} else GetNode<HUD>("HUD").PlayerTurnUI();;
 	}
 
-	public void PlayerBust()
+	private void PlayerBust()
 	{
-		HideActionButtons();
-		RoundOver();
-	}
-
-	public void PlayerBlackJack()
-	{
-		HideActionButtons();
+		GetNode<HUD>("HUD").HideAllButtons();
 		var dealerHand = GetNode<Node2D>("Table").GetNode<Hand>("DealerHand");
 		// Flip the dealer's cards
 		dealerHand.ShowAllCards();
@@ -212,22 +239,13 @@ public partial class Main : Node2D
 		RoundOver();
 	}
 
-	private void HideActionButtons()
+	private void PlayerBlackJack()
 	{
-		var hud = GetNode<HUD>("HUD");
-		hud.GetNode<Button>("HitButton").Hide();
-		hud.GetNode<Button>("StandButton").Hide();
-		hud.GetNode<Button>("NewHandButton").Hide();
-	}
-
-	private void ShowActionButtons(bool playerTurn)
-	{
-		var hud = GetNode<HUD>("HUD");
-		if(playerTurn) {
-			hud.GetNode<Button>("HitButton").Show();
-			hud.GetNode<Button>("StandButton").Show();
-		} else {
-			hud.GetNode<Button>("NewHandButton").Show();
-		}
+		GetNode<HUD>("HUD").HideAllButtons();
+		var dealerHand = GetNode<Node2D>("Table").GetNode<Hand>("DealerHand");
+		// Flip the dealer's cards
+		dealerHand.ShowAllCards();
+		dealerHand.CalculateScore();
+		RoundOver();
 	}
 }

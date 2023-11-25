@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dpmghgccrjn2j"]
+[gd_scene load_steps=3 format=3 uid="uid://dpmghgccrjn2j"]
 
 [ext_resource type="Script" path="res://HUD.cs" id="1_lmf7a"]
+[ext_resource type="FontFile" uid="uid://u53tchiruqs2" path="res://fonts/Neothic.ttf" id="2_21rbf"]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_lmf7a")
@@ -43,6 +44,33 @@ offset_right = 1002.0
 offset_bottom = 707.0
 theme_override_font_sizes/font_size = 20
 text = "New Hand"
+
+[node name="Message" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -229.5
+offset_top = -50.0
+offset_right = 229.5
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_21rbf")
+theme_override_font_sizes/font_size = 35
+text = "Welcome to BlackJack"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Wins" type="Label" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+offset_right = 40.0
+grow_vertical = 0
+text = "Wins: 0"
 
 [connection signal="pressed" from="HitButton" to="." method="OnHitButtonPressed"]
 [connection signal="pressed" from="StandButton" to="." method="OnStandButtonPressed"]
