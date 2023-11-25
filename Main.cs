@@ -70,9 +70,9 @@ public partial class Main : Node2D
 	private void DrawCard()
 	{
 		var deck = GetNode<Node2D>("Table").GetNode<Node2D>("Deck");
-		var playerHand = GetNode<Node2D>("Table").GetNode<Node2D>("PlayerHand");
+		var playerHand = GetNode<Node2D>("Table").GetNode<Hand>("PlayerHand");
 
-		if (_deck.Length > 0)
+		if (_deck.Length > 0 && playerHand.IsActive())
 		{
 			// Draw the top card from the deck and put it in the hand
 			var card = _deck[_deck.Length-1];
@@ -81,6 +81,7 @@ public partial class Main : Node2D
 			var cardCount = playerHand.GetChildren().Count;
 			playerHand.AddChild(card);
 			card.Position = new Vector2(40 * cardCount,0);
+			playerHand.CalculateScore();
 		}
 
 		if (_deck.Length == 0)

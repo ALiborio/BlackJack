@@ -37,11 +37,11 @@ color = Color(0.164706, 0.411765, 0.2, 1)
 
 [node name="DealerHand" parent="Table" instance=ExtResource("3_tfjuk")]
 position = Vector2(75, 50)
-HandOwner = "dealer"
+HandOwner = "Dealer"
 
 [node name="PlayerHand" parent="Table" instance=ExtResource("3_tfjuk")]
 position = Vector2(75, 450)
-HandOwner = "player"
+HandOwner = "Player"
 
 [node name="Deck" type="Node2D" parent="Table"]
 position = Vector2(828, 8)
