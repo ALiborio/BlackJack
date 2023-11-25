@@ -44,21 +44,29 @@ public partial class Hand : Node2D
 			{
 				cards++;
 				var card = child as Card;
-				score += card.GetScoreValue();
-				if (card.GetScoreValue()==1)
+				if (card.IsFaceUp())
 				{
-					aces++;
+					score += card.GetScoreValue();
+					if (card.GetScoreValue()==1)
+					{
+						aces++;
+					}
 				}
 			}
+		}
+		
+		if (aces > 0)
+		{
+			_altScore = (aces * 10) + score;
 		}
 
 		if (score > 0)
 		{
 			_score = score;
-			if (score > 21) {
+			if (_score > 21) {
 				_status = Status.Bust;
 				EmitSignal(SignalName.Bust);
-			} else if (score == 21 && cards == 2) {
+			} else if (_altScore == 21 && cards == 2) {
 				_status = Status.BlackJack;
 				EmitSignal(SignalName.BlackJack);
 			} else if (_status != Status.Stand) {
@@ -71,15 +79,20 @@ public partial class Hand : Node2D
 				statusText = _status.ToString().ToUpper();
 			}
 			string altScoreText = "";
-			if (aces > 0)
+			if (_altScore > 0 &&_altScore < 22)
 			{
-				_altScore = aces * 10 + _score;
-				if (_altScore < 21)
-				{
-					altScoreText = "/"+(aces * 10 + _score).ToString();
-				}
+				altScoreText = "/"+_altScore.ToString();
 			}
-			GetNode<Label>("HandLabel").Text = HandOwner + "'s Hand (" + _score + altScoreText + ") " + statusText;
+			string additionalText = "";
+			if (_status == Status.BlackJack)
+			{
+				additionalText = " "+statusText;
+			}
+			else 
+			{
+				additionalText = " (" + _score + altScoreText + ") " + statusText;
+			}
+			GetNode<Label>("HandLabel").Text = HandOwner + "'s Hand" + additionalText;
 		}
 	}
 
@@ -98,6 +111,18 @@ public partial class Hand : Node2D
 		_altScore = 0;
 		_status = Status.Active;
 		GetNode<Label>("HandLabel").Text = HandOwner+"'s Hand";
+	}
+
+	public void ShowAllCards()
+	{
+		foreach (var child in GetChildren())
+		{
+			if (child is Card)
+			{
+				var card = child as Card;
+				card.Flip();
+			}
+		}
 	}
 
 	public Boolean IsBust()
@@ -122,7 +147,7 @@ public partial class Hand : Node2D
 
 	public int GetScore()
 	{
-		if (_altScore < 22)
+		if (_altScore > 0 &&_altScore < 22)
 			return _altScore;
 		return _score;
 	}

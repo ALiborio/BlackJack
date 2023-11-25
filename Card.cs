@@ -5,6 +5,7 @@ public partial class Card : Node2D
 {
 	private int _value { get; set; } = 1;
 	private Suits _suit { get; set;}
+	private bool _faceDown = true;
 
 	public void Init(Suits initSuit, int initValue)
 	{
@@ -59,6 +60,19 @@ public partial class Card : Node2D
 			default:
 				break;
 		}
+		showHideCardBack();
+	}
+
+	private void showHideCardBack()
+	{
+		if (_faceDown)
+		{
+			GetNode<Panel>("CardBack").Show();
+		}
+		else
+		{
+			GetNode<Panel>("CardBack").Hide();
+		}
 	}
 
 	public int GetScoreValue()
@@ -70,5 +84,16 @@ public partial class Card : Node2D
 		} else {
 			return _value;
 		}
+	}
+
+	public void Flip()
+	{
+		_faceDown = false;
+		showHideCardBack();
+	}
+
+	public bool IsFaceUp()
+	{
+		return !_faceDown;
 	}
 }

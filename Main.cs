@@ -14,6 +14,7 @@ public partial class Main : Node2D
 	{
 		GenerateDeck();
 		ShuffleDeck();
+		StartRound();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -56,7 +57,7 @@ public partial class Main : Node2D
 		ArrangeDeck();
 	}
 
-	public void DealCard(Hand hand)
+	public void DealCard(Hand hand, bool faceDown)
 	{
 		var deck = GetNode<Node2D>("Table").GetNode<Node2D>("Deck");
 		if (_deck.Length > 0)
@@ -68,11 +69,9 @@ public partial class Main : Node2D
 			var cardCount = hand.GetChildren().Count;
 			hand.AddChild(card);
 			card.Position = new Vector2(40 * cardCount,0);
+			if (!faceDown)
+				card.Flip();
 			hand.CalculateScore();
-		}
-		if (_deck.Length == 0)
-		{
-			GetNode<Node2D>("Table").GetNode<Panel>("CardBack").Hide();
 		}
 	}
 
@@ -93,7 +92,7 @@ public partial class Main : Node2D
 
 		if (playerHand.IsActive())
 		{
-			DealCard(playerHand);
+			DealCard(playerHand,false);
 		}
 	}
 	
@@ -111,17 +110,19 @@ public partial class Main : Node2D
 		hud.GetNode<Button>("NewHandButton").Show();
 	}
 
-	public void DealerTurn()
+	public async void DealerTurn()
 	{
 		var dealerHand = GetNode<Node2D>("Table").GetNode<Hand>("DealerHand");
-		// Deal first two cards, in the future this will be done at the beginning of the round
-		DealCard(dealerHand);
-		DealCard(dealerHand);
+		var actionTimer = GetNode<Timer>("ActionTimer");
+		// Flip the dealer's cards
+		dealerHand.ShowAllCards();
+		dealerHand.CalculateScore();
+		await ToSignal(actionTimer, "timeout");
 		while (dealerHand.IsActive() && _deck.Length > 0) {
 			if (dealerHand.GetScore() >= 17) {
 				dealerHand.EndTurn();
 			} else {
-				DealCard(dealerHand);
+				DealCard(dealerHand,false);
 			}
 		}
 		TurnOver();
@@ -153,11 +154,30 @@ public partial class Main : Node2D
 		}
 		playerHand.ResetHand();
 		dealerHand.ResetHand();
+		StartRound();
+	}
 
+	public async void StartRound()
+	{
 		var hud = GetNode<HUD>("HUD");
+		hud.GetNode<Button>("NewHandButton").Hide();
+		var actionTimer = GetNode<Timer>("ActionTimer");
+		var table = GetNode<Node2D>("Table");
+		var playerHand = table.GetNode<Hand>("PlayerHand");
+		var dealerHand = table.GetNode<Hand>("DealerHand");
+		// Deal to the player
+		await ToSignal(actionTimer, "timeout");
+		DealCard(playerHand,false);
+		await ToSignal(actionTimer, "timeout");
+		DealCard(playerHand,false);
+		// Deal to the dealer
+		await ToSignal(actionTimer, "timeout");
+		DealCard(dealerHand,false);
+		await ToSignal(actionTimer, "timeout");
+		DealCard(dealerHand,true);
+		// Update HUD
 		hud.GetNode<Button>("HitButton").Show();
 		hud.GetNode<Button>("StandButton").Show();
-		hud.GetNode<Button>("NewHandButton").Hide();
 	}
 
 	public void PlayerBust()
@@ -167,6 +187,11 @@ public partial class Main : Node2D
 
 	public void PlayerBlackJack()
 	{
-		DealerTurn();
+		var dealerHand = GetNode<Node2D>("Table").GetNode<Hand>("DealerHand");
+		// Flip the dealer's cards
+		dealerHand.ShowAllCards();
+		dealerHand.CalculateScore();
+		dealerHand.EndTurn();
+		TurnOver();
 	}
 }
