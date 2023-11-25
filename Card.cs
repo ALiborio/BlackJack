@@ -29,7 +29,6 @@ public partial class Card : Node2D
 		InitializeDisplay();
 	}
 
-
 	private void InitializeDisplay()
 	{
 		var valueLabel = GetNode<Label>("ValueLabel");
@@ -59,6 +58,17 @@ public partial class Card : Node2D
 				break;
 			default:
 				break;
+		}
+	}
+
+	public int GetScoreValue()
+	{
+		// _values of > 10 have a score of 10
+		if (_value > 10)
+		{
+			return 10;
+		} else {
+			return _value;
 		}
 	}
 }

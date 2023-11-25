@@ -4,10 +4,10 @@ using System;
 public partial class HUD : CanvasLayer
 {
 	[Signal]
-	public delegate void ShuffleDeckEventHandler();
+	public delegate void DrawCardEventHandler();
 
-	public void OnShuffleDeckButtonPressed()
+	public void OnDrawCardButtonPressed()
 	{
-		EmitSignal(SignalName.ShuffleDeck);
+		EmitSignal(SignalName.DrawCard);
 	}
 }
