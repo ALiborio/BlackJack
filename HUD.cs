@@ -4,7 +4,7 @@ using System;
 public partial class HUD : CanvasLayer
 {
 	[Signal]
-	public delegate void DrawCardEventHandler();
+	public delegate void HitEventHandler();
 	[Signal]
 	public delegate void EndTurnEventHandler();
 	[Signal]
@@ -12,7 +12,7 @@ public partial class HUD : CanvasLayer
 
 	public void OnHitButtonPressed()
 	{
-		EmitSignal(SignalName.DrawCard);
+		EmitSignal(SignalName.Hit);
 	}
 
 	public void OnStandButtonPressed()
