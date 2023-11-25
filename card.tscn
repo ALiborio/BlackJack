@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bl1ovservey8g"]
+[gd_scene load_steps=7 format=3 uid="uid://bl1ovservey8g"]
 
 [ext_resource type="FontFile" uid="uid://u53tchiruqs2" path="res://fonts/Neothic.ttf" id="1_0te4w"]
 [ext_resource type="Script" path="res://Card.cs" id="1_o41h4"]
@@ -15,6 +15,25 @@ corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mu0yk"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.172549, 0.172549, 0.172549, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1e6hv"]
+bg_color = Color(0, 0.2, 0.356863, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="Card" type="Node2D"]
 script = ExtResource("1_o41h4")
@@ -46,3 +65,16 @@ theme_override_font_sizes/font_size = 25
 text = "♠"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="CardBack" type="Panel" parent="."]
+offset_right = 180.0
+offset_bottom = 280.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_mu0yk")
+
+[node name="CardBackArt" type="Panel" parent="CardBack"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 160.0
+offset_bottom = 260.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_1e6hv")
