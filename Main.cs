@@ -9,6 +9,8 @@ public partial class Main : Node2D
 
     private Card[] _deck = Array.Empty<Card>();
     private int _wins = 0;
+    private int _losses = 0;
+    private int _handsPlayed = 0;
     private int _money = 0;
     private const int _startMoney = 1000;
     private const int _minBet = 5;
@@ -120,6 +122,7 @@ public partial class Main : Node2D
 
     private void RoundOver()
     {
+        _handsPlayed++;
         var playerHand = GetNode<Node2D>("Table").GetNode<Hand>("PlayerHand");
         var dealerHand = GetNode<Node2D>("Table").GetNode<Hand>("DealerHand");
         string message;
@@ -168,6 +171,7 @@ public partial class Main : Node2D
         }
         GetNode<HUD>("HUD").EndOfTurnUI(message);
         GetNode<HUD>("HUD").UpdateMoney(_money);
+        GD.Print("Wins:", _wins, " Losses:", _losses, " Hands Played:", _handsPlayed);
     }
 
     private void PlayerWins(bool blackjack)
@@ -184,6 +188,7 @@ public partial class Main : Node2D
     private void PlayerLoses()
     {
         // Take the player's bet
+        _losses++;
     }
 
     private async void DealerTurn()

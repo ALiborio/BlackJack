@@ -32,7 +32,7 @@ public partial class Hand : Node2D
     {
     }
 
-    private void UpdateLabel([Optional]string additionalText)
+    private void UpdateLabel([Optional] string additionalText)
     {
         GetNode<Label>("HandLabel").Text = HandOwner + "'s Hand" + additionalText;
     }
@@ -51,14 +51,14 @@ public partial class Hand : Node2D
                 if (card.IsFaceUp())
                 {
                     score += card.GetScoreValue();
-                    if (card.GetScoreValue()==1)
+                    if (card.GetScoreValue() == 1)
                     {
                         aces++;
                     }
                 }
             }
         }
-        
+
         if (aces > 0)
         {
             _altScore = (aces * 10) + score;
@@ -67,15 +67,16 @@ public partial class Hand : Node2D
         if (score > 0)
         {
             _score = score;
-            if (_score > 21) {
+            if (_score > 21)
+            {
                 _status = Status.Bust;
                 EmitSignal(SignalName.Bust);
-            } 
-            else if (_altScore == 21 && cards == 2) 
+            }
+            else if (_altScore == 21 && cards == 2)
             {
                 _status = Status.BlackJack;
-            } 
-            else if (_status != Status.Stand) 
+            }
+            else if (_status != Status.Stand)
             {
                 _status = Status.Active;
             }
@@ -86,16 +87,16 @@ public partial class Hand : Node2D
                 statusText = _status.ToString().ToUpper();
             }
             string altScoreText = "";
-            if (_altScore > 0 &&_altScore < 22)
+            if (_altScore > 0 && _altScore < 22)
             {
-                altScoreText = "/"+_altScore.ToString();
+                altScoreText = "/" + _altScore.ToString();
             }
             string additionalText;
             if (_status == Status.BlackJack)
             {
-                additionalText = " "+statusText;
+                additionalText = " " + statusText;
             }
-            else 
+            else
             {
                 additionalText = " (" + _score + altScoreText + ") " + statusText;
             }
@@ -117,7 +118,7 @@ public partial class Hand : Node2D
         _score = 0;
         _altScore = 0;
         _status = Status.Active;
-        GetNode<Label>("HandLabel").Text = HandOwner+"'s Hand";
+        GetNode<Label>("HandLabel").Text = HandOwner + "'s Hand";
     }
 
     public void ShowAllCards()
@@ -154,7 +155,7 @@ public partial class Hand : Node2D
 
     public int GetScore()
     {
-        if (_altScore > 0 &&_altScore < 22)
+        if (_altScore > 0 && _altScore < 22)
             return _altScore;
         return _score;
     }
