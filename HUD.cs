@@ -52,8 +52,8 @@ public partial class HUD : CanvasLayer
         GetNode<Button>("NewHandButton").Show();
     }
 
-    public void UpdateWins(int wins)
+    public void UpdateMoney(int value)
     {
-        GetNode<Label>("Wins").Text = "Wins: "+wins;
+        GetNode<Label>("Money").Text = "$" + value;
     }
 }

@@ -4,7 +4,7 @@ using System;
 public partial class Card : Node2D
 {
     private int _value { get; set; } = 1;
-    private Suits _suit { get; set;}
+    private Suits _suit { get; set; }
     private bool _faceDown = true;
 
     public void Init(Suits initSuit, int initValue)
@@ -13,7 +13,7 @@ public partial class Card : Node2D
         _suit = initSuit;
     }
 
-    private static readonly string[] valueDisplay = {"A","2","3","4","5","6","7","8","9","10","J","Q","K"};
+    private static readonly string[] valueDisplay = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
 
     public enum Suits
     {
@@ -33,7 +33,7 @@ public partial class Card : Node2D
     private void InitializeDisplay()
     {
         var valueLabel = GetNode<Label>("ValueLabel");
-        valueLabel.Text = valueDisplay[_value-1].ToString();
+        valueLabel.Text = valueDisplay[_value - 1].ToString();
         var suitLabel = GetNode<Label>("SuitLabel");
         switch (_suit)
         {
@@ -81,8 +81,8 @@ public partial class Card : Node2D
         if (_value > 10)
         {
             return 10;
-        } 
-        else 
+        }
+        else
         {
             return _value;
         }
