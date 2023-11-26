@@ -40,3 +40,4 @@ autostart = true
 [connection signal="EndTurn" from="HUD" to="." method="EndTurn"]
 [connection signal="Hit" from="HUD" to="." method="Hit"]
 [connection signal="NewHand" from="HUD" to="." method="ClearTable"]
+[connection signal="PlaceBet" from="HUD" to="." method="PlaceBet"]

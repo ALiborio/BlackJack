@@ -76,6 +76,68 @@ theme_override_fonts/font = ExtResource("2_21rbf")
 theme_override_font_sizes/font_size = 16
 text = "$"
 
+[node name="BetControls" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BetPicker" type="SpinBox" parent="BetControls"]
+offset_left = 896.0
+offset_top = 588.0
+offset_right = 1002.0
+offset_bottom = 622.0
+min_value = 5.0
+step = 5.0
+value = 5.0
+
+[node name="Label" type="Label" parent="BetControls/BetPicker"]
+layout_mode = 0
+offset_left = -33.0
+offset_top = 2.0
+offset_right = -13.0
+offset_bottom = 31.0
+theme_override_fonts/font = ExtResource("2_21rbf")
+theme_override_font_sizes/font_size = 24
+text = "$"
+
+[node name="PlaceBet" type="Button" parent="BetControls"]
+offset_left = 852.0
+offset_top = 632.0
+offset_right = 1002.0
+offset_bottom = 707.0
+theme_override_font_sizes/font_size = 20
+text = "Place Bet"
+
+[node name="MinimumBet" type="Label" parent="BetControls"]
+offset_left = 833.0
+offset_top = 526.0
+offset_right = 953.0
+offset_bottom = 549.0
+theme_override_fonts/font = ExtResource("2_21rbf")
+theme_override_font_sizes/font_size = 16
+text = "Minimum Bet:"
+
+[node name="MaximumBet" type="Label" parent="BetControls"]
+offset_left = 833.0
+offset_top = 552.0
+offset_right = 959.0
+offset_bottom = 575.0
+theme_override_fonts/font = ExtResource("2_21rbf")
+theme_override_font_sizes/font_size = 16
+text = "Maximum Bet:"
+
+[node name="CurrentBet" type="Label" parent="."]
+offset_left = 837.0
+offset_top = 550.0
+offset_right = 1001.0
+offset_bottom = 576.0
+theme_override_fonts/font = ExtResource("2_21rbf")
+theme_override_font_sizes/font_size = 16
+text = "Current Bet: $"
+
 [connection signal="pressed" from="HitButton" to="." method="OnHitButtonPressed"]
 [connection signal="pressed" from="StandButton" to="." method="OnStandButtonPressed"]
 [connection signal="pressed" from="NewHandButton" to="." method="OnNewHandButtonPressed"]
+[connection signal="pressed" from="BetControls/PlaceBet" to="." method="OnPlaceBetButtonPressed"]

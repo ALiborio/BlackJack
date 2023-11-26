@@ -8,11 +8,13 @@ public partial class Main : Node2D
     public PackedScene CardScene { get; set; }
 
     private Card[] _deck = Array.Empty<Card>();
+    private HUD _hud;
     private int _wins = 0;
     private int _losses = 0;
     private int _handsPlayed = 0;
     private int _money = 0;
-    private const int _startMoney = 1000;
+    private int _currentBet = 0;
+    private const int _startMoney = 50;
     private const int _minBet = 5;
     private const int _maxBet = 100;
 
@@ -22,10 +24,6 @@ public partial class Main : Node2D
         InitializeGameData();
         GenerateDeck();
         ShuffleDeck();
-        var hud = GetNode<HUD>("HUD");
-        hud.UpdateMoney(_money);
-        hud.HideAllButtons();
-        hud.EndOfTurnUI("Welcome to BlackJack");
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -37,6 +35,12 @@ public partial class Main : Node2D
     {
         // In the future, get this from a settings file
         _money = _startMoney;
+        _currentBet = _minBet;
+        _hud = GetNode<HUD>("HUD");
+        _hud.UpdateMoney(_money);
+        _hud.UpdateMinMaxBets(_minBet, _maxBet);
+        _hud.HideAllButtons();
+        _hud.EndOfTurnUI("Welcome to BlackJack");
     }
 
     private void GenerateDeck()
@@ -71,7 +75,19 @@ public partial class Main : Node2D
         newDeck = newDeck.Append(_deck[0]).ToArray();
         // Update the deck with the shuffled deck
         _deck = newDeck;
+        GD.Print(_deck[0].GetScoreValue(), _deck[1].GetScoreValue());
         ArrangeDeck();
+    }
+
+    private void ArrangeDeck()
+    {
+        // Arrange the cards in the deck
+        var deck = GetNode<Node2D>("Table").GetNode<Node2D>("Deck");
+        for (int i = 0; i < _deck.Length; i++)
+        {
+            deck.MoveChild(_deck[i], -1);
+            _deck[i].Position = new Vector2(i, i);
+        }
     }
 
     private void DealCard(Hand hand, bool faceDown)
@@ -92,17 +108,6 @@ public partial class Main : Node2D
         }
     }
 
-    private void ArrangeDeck()
-    {
-        // Arrange the cards in the deck
-        var deck = GetNode<Node2D>("Table").GetNode<Node2D>("Deck");
-        for (int i = 0; i < _deck.Length; i++)
-        {
-            deck.MoveChild(_deck[i], -1);
-            _deck[i].Position = new Vector2(i, i);
-        }
-    }
-
     private void Hit()
     {
         var playerHand = GetNode<Node2D>("Table").GetNode<Hand>("PlayerHand");
@@ -115,7 +120,7 @@ public partial class Main : Node2D
 
     private void EndTurn()
     {
-        GetNode<HUD>("HUD").HideAllButtons();
+        _hud.HideAllButtons();
         GetNode<Node2D>("Table").GetNode<Hand>("PlayerHand").EndTurn();
         DealerTurn();
     }
@@ -169,25 +174,27 @@ public partial class Main : Node2D
             message = "You Lose!";
             PlayerLoses();
         }
-        GetNode<HUD>("HUD").EndOfTurnUI(message);
-        GetNode<HUD>("HUD").UpdateMoney(_money);
+        _hud.EndOfTurnUI(message);
+        _hud.UpdateMoney(_money);
         GD.Print("Wins:", _wins, " Losses:", _losses, " Hands Played:", _handsPlayed);
     }
 
     private void PlayerWins(bool blackjack)
     {
         // Award the player their winnings
+        _money += _currentBet + (int)(blackjack ? _currentBet * 1.5 : _currentBet);
         _wins++;
     }
 
     private void Push()
     {
         // Return the player's bet
+        _money += _currentBet;
     }
 
     private void PlayerLoses()
     {
-        // Take the player's bet
+        // Player forfeits their bet
         _losses++;
     }
 
@@ -255,12 +262,31 @@ public partial class Main : Node2D
             }
             ShuffleDeck();
         }
+        AskForBets();
+    }
+
+    private void AskForBets()
+    {
+        _hud.HideAllButtons();
+        _hud.BettingStageUI(
+            _currentBet > _money ? _money : _currentBet > _maxBet ? _maxBet : _currentBet,
+            _money < _maxBet ? _money : _maxBet
+        );
+    }
+
+    private void PlaceBet()
+    {
+        _currentBet = _hud.GetBetAmount();
+        _hud.UpdateCurrentBet(_currentBet);
+        _money -= _currentBet;
+        _hud.UpdateMoney(_money);
         StartRound();
     }
 
     private async void StartRound()
     {
-        GetNode<HUD>("HUD").HideAllButtons();
+        _hud.HideAllButtons();
+        _currentBet = _hud.GetBetAmount();
         var actionTimer = GetNode<Timer>("ActionTimer");
         var table = GetNode<Node2D>("Table");
         var playerHand = table.GetNode<Hand>("PlayerHand");
@@ -281,13 +307,13 @@ public partial class Main : Node2D
         }
         else
         {
-            GetNode<HUD>("HUD").PlayerTurnUI();
+            _hud.PlayerTurnUI();
         }
     }
 
     private void PlayerBust()
     {
-        GetNode<HUD>("HUD").HideAllButtons();
+        _hud.HideAllButtons();
         var dealerHand = GetNode<Node2D>("Table").GetNode<Hand>("DealerHand");
         // Flip the dealer's cards
         dealerHand.ShowAllCards();
@@ -297,7 +323,7 @@ public partial class Main : Node2D
 
     private void PlayerBlackJack()
     {
-        GetNode<HUD>("HUD").HideAllButtons();
+        _hud.HideAllButtons();
         var dealerHand = GetNode<Node2D>("Table").GetNode<Hand>("DealerHand");
         // Flip the dealer's cards
         dealerHand.ShowAllCards();
