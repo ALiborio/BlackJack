@@ -14,7 +14,7 @@ public partial class Main : Node2D
     private int _handsPlayed = 0;
     private int _money = 0;
     private int _currentBet = 0;
-    private const int _startMoney = 50;
+    private const int _startMoney = 500;
     private const int _minBet = 5;
     private const int _maxBet = 100;
 
