@@ -174,8 +174,15 @@ public partial class Main : Node2D
             message = "You Lose!";
             PlayerLoses();
         }
-        _hud.EndOfTurnUI(message);
         _hud.UpdateMoney(_money);
+        if (_money <= 0)
+        {
+            _hud.GameOver();
+        }
+        else
+        {
+            _hud.EndOfTurnUI(message);
+        }
         GD.Print("Wins:", _wins, " Losses:", _losses, " Hands Played:", _handsPlayed);
     }
 

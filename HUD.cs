@@ -94,4 +94,12 @@ public partial class HUD : CanvasLayer
     {
         GetNode<Label>("Money").Text = "$" + value;
     }
+
+    public void GameOver()
+    {
+        HideAllButtons();
+        var message = GetNode<Label>("Message");
+        message.Text = "You ran out of money!";
+        message.Show();
+    }
 }

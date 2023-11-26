@@ -13,9 +13,9 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -174.0
-offset_top = -93.0
+offset_top = -109.0
 offset_right = -24.0
-offset_bottom = -18.0
+offset_bottom = -34.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 20
@@ -28,9 +28,9 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -174.0
-offset_top = -178.0
+offset_top = -194.0
 offset_right = -24.0
-offset_bottom = -103.0
+offset_bottom = -119.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 20
@@ -44,6 +44,15 @@ offset_right = 1002.0
 offset_bottom = 707.0
 theme_override_font_sizes/font_size = 20
 text = "New Hand"
+
+[node name="CurrentBet" type="Label" parent="."]
+offset_left = 837.0
+offset_top = 534.0
+offset_right = 1001.0
+offset_bottom = 560.0
+theme_override_fonts/font = ExtResource("2_21rbf")
+theme_override_font_sizes/font_size = 16
+text = "Current Bet: $"
 
 [node name="Message" type="Label" parent="."]
 anchors_preset = 8
@@ -64,13 +73,16 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Money" type="Label" parent="."]
-anchors_preset = 2
+anchors_preset = 3
+anchor_left = 1.0
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 15.0
-offset_top = -33.0
-offset_right = 55.0
-offset_bottom = -7.0
+offset_left = -74.0
+offset_top = -28.0
+offset_right = -34.0
+offset_bottom = -2.0
+grow_horizontal = 0
 grow_vertical = 0
 theme_override_fonts/font = ExtResource("2_21rbf")
 theme_override_font_sizes/font_size = 16
@@ -127,15 +139,6 @@ offset_bottom = 575.0
 theme_override_fonts/font = ExtResource("2_21rbf")
 theme_override_font_sizes/font_size = 16
 text = "Maximum Bet:"
-
-[node name="CurrentBet" type="Label" parent="."]
-offset_left = 837.0
-offset_top = 550.0
-offset_right = 1001.0
-offset_bottom = 576.0
-theme_override_fonts/font = ExtResource("2_21rbf")
-theme_override_font_sizes/font_size = 16
-text = "Current Bet: $"
 
 [connection signal="pressed" from="HitButton" to="." method="OnHitButtonPressed"]
 [connection signal="pressed" from="StandButton" to="." method="OnStandButtonPressed"]
